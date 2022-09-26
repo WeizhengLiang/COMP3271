@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/build",
+  "command": "/usr/bin/clang  -I/System/Library/Frameworks -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/thirdparty/glad/include -isystem /opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -o CMakeFiles/Main.dir/thirdparty/glad/src/glad.c.o -c /Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/thirdparty/glad/src/glad.c",
+  "file": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/thirdparty/glad/src/glad.c"
+},
+{
+  "directory": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/build",
+  "command": "/usr/bin/clang++  -I/System/Library/Frameworks -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/thirdparty/glad/include -isystem /opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -o CMakeFiles/Main.dir/main.cpp.o -c /Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/main.cpp",
+  "file": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/main.cpp"
+},
+{
+  "directory": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/build",
+  "command": "/usr/bin/clang++  -I/System/Library/Frameworks -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/thirdparty/glad/include -isystem /opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -o CMakeFiles/Main.dir/code.cpp.o -c /Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/code.cpp",
+  "file": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/Graphics_PA1_Release/code.cpp"
+}
+]

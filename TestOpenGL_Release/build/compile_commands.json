@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/TestOpenGL_Release/build",
+  "command": "/usr/bin/clang  -I/System/Library/Frameworks -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/TestOpenGL_Release/thirdparty/glad/include -isystem /opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -o CMakeFiles/TestOpenGL.dir/thirdparty/glad/src/glad.c.o -c /Users/weizhengliang/Desktop/hku_course_material/COMP3271/TestOpenGL_Release/thirdparty/glad/src/glad.c",
+  "file": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/TestOpenGL_Release/thirdparty/glad/src/glad.c"
+},
+{
+  "directory": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/TestOpenGL_Release/build",
+  "command": "/usr/bin/clang++  -I/System/Library/Frameworks -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/TestOpenGL_Release/thirdparty/glad/include -isystem /opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -o CMakeFiles/TestOpenGL.dir/TestOpenGL.cpp.o -c /Users/weizhengliang/Desktop/hku_course_material/COMP3271/TestOpenGL_Release/TestOpenGL.cpp",
+  "file": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/TestOpenGL_Release/TestOpenGL.cpp"
+}
+]
