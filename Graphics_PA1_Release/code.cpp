@@ -17,6 +17,10 @@ struct Triangle {
     int color_index;
 };
 
+struct Matrix {
+    double matrix[3][3];
+};
+
 // list of triangles, each element is of type Triangle
 // to access the kth triangle, just use triangles[k]
 // to get the number of triangles in the list, use triangles.size()
@@ -49,6 +53,40 @@ double color_array[][3] = {
     {0.2,0.2,0.2}
 };
 
+std::vector<Matrix> affine_matrices;
+
+void VerticesToMatrix(double vertices[][2], double matrix[][3]){
+    for ( int i = 0; i < 3; i++ ){
+        for ( int j = 0; j < 2; j++){
+            matrix[j][i] =  vertices[i][j];
+        }
+    }
+    for ( int i = 0; i < 3; i++ ){
+        matrix[2][i] = 1.0;
+    }
+}
+
+void MatrixMultiplication(double matrix_1[][3], double matrix_2[][3], double result[][3]){
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            result[i][j] = 0;
+ 
+            for (int k = 0; k < 3; k++) {
+                result[i][j] += matrix_1[i][k] * matrix_2[k][j];
+            }
+        }
+
+    }
+}
+
+void PrintMatrix(double matrix[3][3]){
+    for (int i=0; i<3;i++){
+        for (int j=0; j<3;j++){
+            std::cout << matrix[i][j] << " " << std::ends;
+        }
+        std::cout << "\n" << std::ends;
+    }
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // This function is called to clear triangles.
@@ -66,17 +104,27 @@ void DrawTriangles() {
     // glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
     // sample code to draw vertices of triangle
-    glColor3d(1.0, 1.0, 1.0);
-    glPointSize(4);
-    glBegin(GL_POINTS);
-    for (int i = 0; i < point_count; i++) {
-        glVertex2d(triangle_to_draw.vertices[i][0], triangle_to_draw.vertices[i][1]);
-    }
-    glEnd();
+    // glColor3d(1.0, 1.0, 1.0);
+    // glPointSize(4);
+    // glBegin(GL_POINTS);
+    // for (int i = 0; i < point_count; i++) {
+    //     glVertex2d(triangle_to_draw.vertices[i][0], triangle_to_draw.vertices[i][1]);
+    // }
+    // glEnd();
 
     // TODO: Add code to draw triangles here. Use triangles.size() to get number of triangles.
     // Use triangles[i] to get the ith triangle.
     // Remember to set current gl color from the color_array
+
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < point_count/3; i++) {
+        glColor3d( color_array[i][0], color_array[i][1], color_array[i][2] );
+        for (int j = 0; j < 3; j++){
+            glVertex2d(triangles[i].vertices[j][0], triangles[i].vertices[j][1]);
+        }
+            
+    }
+    glEnd();
     
 }
 
@@ -95,6 +143,49 @@ void RecursiveFractal(int k) {
     // The fields of struct Triangle include:
     //	 double vertices[3][2];
     //	 double matrix[3][3];
+
+    if ( k > 0 ){
+        for (int i = 0; i < triangles.size(); i++){
+            glPushMatrix();
+            glTranslated(-0.25, -0.25, 0.0); 
+            // glScaled(0.5, 0.5, 0.0);
+            glMultMatrixd((const GLdouble *)affine_matrices[i].matrix);
+            RecursiveFractal(k-1);
+            // for (int j = k-1; j <= i; j++){
+            //     DrawTriangles();
+            // }
+
+            glPopMatrix();
+
+            glPushMatrix();
+            glTranslated(0.25, -0.25, 0.0); 
+            // glScaled(0.5, 0.5, 0.0);
+            glMultMatrixd((const GLdouble *)affine_matrices[i].matrix);
+            RecursiveFractal(k-1);
+            // for (int j = k-1; j <= i; j++){
+            //     DrawTriangles();
+            // }
+
+            glPopMatrix();
+
+            glPushMatrix();
+            glTranslated(0, 0.25, 0.0); 
+            // glScaled(0.5, 0.5, 0.0);
+            glMultMatrixd((const GLdouble *)affine_matrices[i].matrix);
+            RecursiveFractal(k-1);
+            // for (int j = k-1; j <= i; j++){
+            //     DrawTriangles();
+            // }
+            glPopMatrix();
+        }
+    }else{
+        glBegin(GL_TRIANGLES);
+        glVertex2d(triangles[0].vertices[0][0], triangles[0].vertices[0][1]);
+        glVertex2d(triangles[0].vertices[1][0], triangles[0].vertices[1][1]);
+        glVertex2d(triangles[0].vertices[2][0], triangles[0].vertices[2][1]);
+        glEnd();
+
+    }
 
 }
 
@@ -117,15 +208,17 @@ void ConstructiveFractals() {
 
 void MouseInteraction(double m_x, double m_y) {
     point_count += 1;
+
+    std::cout << "x = " << m_x << "; y = " << m_y<< std::endl;
     // TODO: Store the point temporarily into the variable triangle_to_draw.
-    triangle_to_draw.vertices[ point_count ][0] = m_x;
-    triangle_to_draw.vertices[ point_count ][1] = m_y;
+    triangle_to_draw.vertices[ (point_count-1)%3 ][0] = m_x;
+    triangle_to_draw.vertices[ (point_count-1)%3 ][1] = m_y;
     // When 3 points are specified, we get a new triangle.
     if ( point_count % 3 == 0 ){
 
         if ( point_count >= 6)
             AffineMatricesCalculation(
-                triangles.front().vertices, 
+                triangles[0].vertices, 
                 triangle_to_draw.vertices, 
                 triangle_to_draw.matrix
                 );
@@ -155,15 +248,39 @@ void AffineMatricesCalculation(double v_original[][2], double v_transformed[][2]
     //		 and T is 3x3 matrix organized in a similar manner but stores data of the original triangle.
     //		 If you do not want to calculate the inverse of T yourself, we provide a tool function InverseMatrix(). This function could compute the inverse of T.
     
+
+
+    Matrix result_matrix;
     // temporarily store the original matrix, to be inversed
-    double original_m[3][3];
-    double transformed_m[3][3];
-    // vertices to matrix -------------------
-    VerticesToMatrix(triangles.front().vertices, original_m);
-    VerticesToMatrix(triangle_to_draw.vertices, transformed_m);
-    // --------------------------------------
-    InverseMatrix(original_m, triangles.front().matrix);
-    MatrixMultiplication(transformed_m, triangles.front().matrix, triangle_to_draw.matrix);
+    Matrix transformed_m;
+    Matrix inversed_m;
+    // vertices to matrix -------------------------------------------------------
+    VerticesToMatrix(triangles[0].vertices, triangles[0].matrix);
+    VerticesToMatrix(triangle_to_draw.vertices, transformed_m.matrix);
+    // --------------------------------------------------------------------------
+    std::cout << "triangles[0].matrix" << std::endl;
+    PrintMatrix(triangles[0].matrix);
+
+    // store matrix to the correspon triangle in the "Triangles" list -----------
+    for (int i = 0; i<3; i++){
+        for (int j = 0; j<3; j++){
+
+                matrix[i][j] = transformed_m.matrix[i][j];
+
+        }
+    }
+    // --------------------------------------------------------------------------
+    InverseMatrix(triangles[0].matrix, inversed_m.matrix);
+    MatrixMultiplication(transformed_m.matrix, triangles[0].matrix, result_matrix.matrix);
+
+    std::cout << "inversed_m.matrix" << std::endl;
+    PrintMatrix(inversed_m.matrix);
+
+    std::cout << "result_matrix.matrix" << std::endl;
+    PrintMatrix(result_matrix.matrix);
+
+    // no original matrix, only all the transformation matrices
+    affine_matrices.push_back(result_matrix);
 
 }
 
@@ -189,28 +306,4 @@ void InverseMatrix(double original_m[][3], double inverse_m[][3]) {
     inverse_m[0][2] = (original_m[0][1] * original_m[1][2] - original_m[0][2] * original_m[1][1]) / determinant;
     inverse_m[1][2] = (original_m[0][2] * original_m[1][0] - original_m[0][0] * original_m[1][2]) / determinant;
     inverse_m[2][2] = (original_m[0][0] * original_m[1][1] - original_m[0][1] * original_m[1][0]) / determinant;
-}
-
-void VerticesToMatrix(double vertices[][2], double matrix[][3]){
-    for ( int i = 0; i < 3; i++ ){
-        for ( int j = 0; j < 2; j++){
-            matrix[j][i] =  vertices[i][j];
-        }
-    }
-    for ( int i = 0; i < 3; i++ ){
-        matrix[2][i] = 1.0;
-    }
-}
-
-void MatrixMultiplication(double matrix_1[][3], double matrix_2[][3], double result[][3]){
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            result[i][j] = 0;
- 
-            for (int k = 0; k < 3; k++) {
-                result[i][j] += matrix_1[i][k] * matrix_2[k][j];
-            }
-        }
-
-    }
 }
