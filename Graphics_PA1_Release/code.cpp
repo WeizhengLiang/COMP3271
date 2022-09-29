@@ -53,8 +53,6 @@ double color_array[][3] = {
     {0.2,0.2,0.2}
 };
 
-std::vector<Matrix> affine_matrices;
-
 void VerticesToMatrix(double vertices[][2], double matrix[][3]){
     for ( int i = 0; i < 3; i++ ){
         for ( int j = 0; j < 2; j++){
@@ -79,23 +77,23 @@ void MatrixMultiplication(double matrix_1[][3], double matrix_2[][3], double res
     }
 }
 
-void PrintMatrix(double matrix[3][3]){
-    for (int i=0; i<3;i++){
-        for (int j=0; j<3;j++){
-            std::cout << matrix[i][j] << " " << std::ends;
-        }
-        std::cout << "\n" << std::ends;
-    }
-}
+// void PrintMatrix(double matrix[3][3]){
+//     for (int i=0; i<3;i++){
+//         for (int j=0; j<3;j++){
+//             std::cout << matrix[i][j] << " " << std::ends;
+//         }
+//         std::cout << "\n" << std::ends;
+//     }
+// }
 
-void PrintGLMatrix(double matrix[4][4]){
-    for (int i=0; i<4;i++){
-        for (int j=0; j<4;j++){
-            std::cout << matrix[i][j] << " " << std::ends;
-        }
-        std::cout << "\n" << std::ends;
-    }
-}
+// void PrintGLMatrix(double matrix[4][4]){
+//     for (int i=0; i<4;i++){
+//         for (int j=0; j<4;j++){
+//             std::cout << matrix[i][j] << " " << std::ends;
+//         }
+//         std::cout << "\n" << std::ends;
+//     }
+// }
 
 void GenerateGLMatrix(double matrix[3][3], double glmatrix[4][4]){
     glmatrix[0][0] = matrix[0][0];
@@ -180,13 +178,13 @@ void RecursiveFractal(int k) {
     //	 double matrix[3][3];
 
     if ( k > 0 ){
-        for (int i = 0; i < triangles.size(); i++){
+        for (int i = 1; i < triangles.size(); i++){
             glPushMatrix();
             // std::cout << "---3*3---" << std::ends;
             // PrintMatrix(affine_matrices[i].matrix);
             double gldouble[4][4];
             double gldouble_T[4][4];
-            GenerateGLMatrix(affine_matrices[i].matrix, gldouble);
+            GenerateGLMatrix(triangles[i].matrix, gldouble);
             MatrixTranspose(gldouble,gldouble_T);
             // std::cout << "---4*4---" << std::ends;
             // PrintGLMatrix(gldouble);
@@ -266,8 +264,6 @@ void AffineMatricesCalculation(double v_original[][2], double v_transformed[][2]
     //		 and T is 3x3 matrix organized in a similar manner but stores data of the original triangle.
     //		 If you do not want to calculate the inverse of T yourself, we provide a tool function InverseMatrix(). This function could compute the inverse of T.
     
-
-
     Matrix result_matrix;
     // temporarily store the original matrix, to be inversed
     Matrix transformed_m;
@@ -276,32 +272,28 @@ void AffineMatricesCalculation(double v_original[][2], double v_transformed[][2]
     VerticesToMatrix(triangles[0].vertices, triangles[0].matrix);
     VerticesToMatrix(triangle_to_draw.vertices, transformed_m.matrix);
     // --------------------------------------------------------------------------
-    std::cout << "triangles[0].matrix" << std::endl;
-    PrintMatrix(triangles[0].matrix);
-
-    // store matrix to the correspon triangle in the "Triangles" list -----------
-    for (int i = 0; i<3; i++){
-        for (int j = 0; j<3; j++){
-
-                matrix[i][j] = transformed_m.matrix[i][j];
-
-        }
-    }
+    // std::cout << "triangles[0].matrix" << std::endl;
+    // PrintMatrix(triangles[0].matrix);
     // --------------------------------------------------------------------------
     InverseMatrix(triangles[0].matrix, inversed_m.matrix);
     MatrixMultiplication(transformed_m.matrix, inversed_m.matrix, result_matrix.matrix);
 
-    std::cout << "transformed_m.matrix" << std::endl;
-    PrintMatrix(transformed_m.matrix);
+    // std::cout << "transformed_m.matrix" << std::endl;
+    // PrintMatrix(transformed_m.matrix);
 
-    std::cout << "inversed_m.matrix" << std::endl;
-    PrintMatrix(inversed_m.matrix);
+    // std::cout << "inversed_m.matrix" << std::endl;
+    // PrintMatrix(inversed_m.matrix);
 
-    std::cout << "result_matrix.matrix" << std::endl;
-    PrintMatrix(result_matrix.matrix);
+    // std::cout << "result_matrix.matrix" << std::endl;
+    // PrintMatrix(result_matrix.matrix);
 
-    // no original matrix, only all the transformation matrices
-    affine_matrices.push_back(result_matrix);
+    for (int i = 0; i<3; i++){
+        for (int j = 0; j<3; j++){
+
+                matrix[i][j] = result_matrix.matrix[i][j];
+
+        }
+    }
 
 }
 
