@@ -34,7 +34,7 @@ int point_count = 0;
 // depth of recursion for IFS
 // inital value is 8
 // change the initial value here
-int recursion_depth = 8;
+int recursion_depth = 4;
 
 
 // color array for triangles
@@ -86,6 +86,41 @@ void PrintMatrix(double matrix[3][3]){
         }
         std::cout << "\n" << std::ends;
     }
+}
+
+void PrintGLMatrix(double matrix[4][4]){
+    for (int i=0; i<4;i++){
+        for (int j=0; j<4;j++){
+            std::cout << matrix[i][j] << " " << std::ends;
+        }
+        std::cout << "\n" << std::ends;
+    }
+}
+
+void GenerateGLMatrix(double matrix[3][3], double glmatrix[4][4]){
+    glmatrix[0][0] = matrix[0][0];
+    glmatrix[0][1] = matrix[0][1];
+    glmatrix[0][2] = 0;
+    glmatrix[0][3] = matrix[0][2];
+    glmatrix[1][0] = matrix[1][0];
+    glmatrix[1][1] = matrix[1][1];
+    glmatrix[1][2] = 0;
+    glmatrix[1][3] = matrix[1][2];
+    glmatrix[2][0] = 0;
+    glmatrix[2][1] = 0;
+    glmatrix[2][2] = 1;
+    glmatrix[2][3] = 0;
+    glmatrix[3][0] = matrix[2][0];
+    glmatrix[3][1] = matrix[2][1];
+    glmatrix[3][2] = 0;
+    glmatrix[3][3] = matrix[2][2];
+}
+
+void MatrixTranspose(double glmatrix[4][4], double glmatrix_TranPo[4][4]){
+    for (int i = 0; i < 4; ++i)
+      for (int j = 0; j < 4; ++j) {
+         glmatrix_TranPo[j][i] = glmatrix[i][j];
+      }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -147,36 +182,19 @@ void RecursiveFractal(int k) {
     if ( k > 0 ){
         for (int i = 0; i < triangles.size(); i++){
             glPushMatrix();
-            glTranslated(-0.25, -0.25, 0.0); 
-            // glScaled(0.5, 0.5, 0.0);
-            glMultMatrixd((const GLdouble *)affine_matrices[i].matrix);
+            // std::cout << "---3*3---" << std::ends;
+            // PrintMatrix(affine_matrices[i].matrix);
+            double gldouble[4][4];
+            double gldouble_T[4][4];
+            GenerateGLMatrix(affine_matrices[i].matrix, gldouble);
+            MatrixTranspose(gldouble,gldouble_T);
+            // std::cout << "---4*4---" << std::ends;
+            // PrintGLMatrix(gldouble);
+            glMultMatrixd((const GLdouble *)gldouble_T);
             RecursiveFractal(k-1);
-            // for (int j = k-1; j <= i; j++){
-            //     DrawTriangles();
-            // }
-
             glPopMatrix();
 
-            glPushMatrix();
-            glTranslated(0.25, -0.25, 0.0); 
-            // glScaled(0.5, 0.5, 0.0);
-            glMultMatrixd((const GLdouble *)affine_matrices[i].matrix);
-            RecursiveFractal(k-1);
-            // for (int j = k-1; j <= i; j++){
-            //     DrawTriangles();
-            // }
-
-            glPopMatrix();
-
-            glPushMatrix();
-            glTranslated(0, 0.25, 0.0); 
-            // glScaled(0.5, 0.5, 0.0);
-            glMultMatrixd((const GLdouble *)affine_matrices[i].matrix);
-            RecursiveFractal(k-1);
-            // for (int j = k-1; j <= i; j++){
-            //     DrawTriangles();
-            // }
-            glPopMatrix();
+            
         }
     }else{
         glBegin(GL_TRIANGLES);
@@ -271,7 +289,10 @@ void AffineMatricesCalculation(double v_original[][2], double v_transformed[][2]
     }
     // --------------------------------------------------------------------------
     InverseMatrix(triangles[0].matrix, inversed_m.matrix);
-    MatrixMultiplication(transformed_m.matrix, triangles[0].matrix, result_matrix.matrix);
+    MatrixMultiplication(transformed_m.matrix, inversed_m.matrix, result_matrix.matrix);
+
+    std::cout << "transformed_m.matrix" << std::endl;
+    PrintMatrix(transformed_m.matrix);
 
     std::cout << "inversed_m.matrix" << std::endl;
     PrintMatrix(inversed_m.matrix);
