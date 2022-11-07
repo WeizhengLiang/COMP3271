@@ -1,0 +1,3 @@
+/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/build/CMakeFiles/Main.dir
+/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/build/CMakeFiles/edit_cache.dir
+/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/build/CMakeFiles/rebuild_cache.dir

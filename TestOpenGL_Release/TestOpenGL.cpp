@@ -68,45 +68,22 @@ int main()
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        glClearColor(0.0, 0.0, 0.0, 1.0);    
-        glClear(GL_COLOR_BUFFER_BIT);        // Clear the display
-
-        if (mode == 1) {
-            glBegin(GL_TRIANGLES);           // Draw filled triangle
-            glColor3f(1.f, 0.f, 0.f);        // Specify color for each vertex of triangle
-            glVertex3f(-0.3f, -0.3f, 0.f);   // Specify position for each vertex of triangle
-            glColor3f(0.f, 1.f, 0.f);
-            glVertex3f(0.3f, -0.3f, 0.f);
-            glColor3f(0.f, 0.f, 1.f);
-            glVertex3f(0.f, 0.3f, 0.f);
-            glEnd();                         // OpenGL draws the filled triangle
-        }
-        if (mode == 2) {
-            glPointSize(5.0);
-            glBegin(GL_POINTS);
-            glVertex2f(-0.3f, -0.3f);
-            glVertex2f(0.0f, 0.3f);
-            glVertex2f(0.3f, -0.3f);
-            glEnd();
-        }
-        if (mode == 3) {
-            glLineWidth(5.0);
-            glBegin(GL_LINE_LOOP);
-            glVertex2f(-0.3f, -0.3f);
-            glVertex2f(0.0f, 0.3f);
-            glVertex2f(0.3f, -0.3f);
-            glEnd();
-        }
+    
         if (mode == 4) {
-            glBegin(GL_POLYGON);
-            glColor3f(1.f, 0.f, 0.f);
-            glVertex3f(-0.3, -0.3f, 0.f);
-            glColor3f(0.f, 1.f, 0.f);
-            glVertex3f(-0.3, 0.3f, 0.f);
-            glColor3f(0.f, 0.f, 1.f);
-            glVertex3f(0.3f, 0.3f, 0.f);
-            glColor3f(1.f, 1.f, 1.f);
-            glVertex3f(0.3, -0.3f, 0.f);
+            
+            glScalef(0.4,2.0,1.0);
+            GLfloat mat[16] = {1,0,0,0,-0.08,1,0,0,0,0,1,0,0,0,0,1};
+            glMultMatrixf(mat);
+            glTranslatef(0.06,-0.01,0);
+            glBegin(GL_QUAD_STRIP);
+            glColor3f(1.f, 0.f, 0.f); 
+            glVertex2f(0.0f, 0.0f);
+            glColor3f(1.f, 0.f, 0.f); 
+            glVertex2f(0.1f, 0.0f);
+            glColor3f(1.f, 0.f, 0.f); 
+            glVertex2f(0.0f, 0.1f);  
+            glColor3f(1.f, 0.f, 0.f); 
+            glVertex2f(0.1f, 0.1f);           
             glEnd();
         }
 

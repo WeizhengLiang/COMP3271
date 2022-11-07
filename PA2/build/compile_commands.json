@@ -1,0 +1,27 @@
+[
+{
+  "directory": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/build",
+  "command": "/usr/bin/clang  -I/System/Library/Frameworks -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glad/include -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glm -isystem /opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -o CMakeFiles/Main.dir/thirdparty/glad/src/glad.c.o -c /Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glad/src/glad.c",
+  "file": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glad/src/glad.c"
+},
+{
+  "directory": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/build",
+  "command": "/usr/bin/clang++  -I/System/Library/Frameworks -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glad/include -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glm -isystem /opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14 -o CMakeFiles/Main.dir/MainFrame.cpp.o -c /Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/MainFrame.cpp",
+  "file": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/MainFrame.cpp"
+},
+{
+  "directory": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/build",
+  "command": "/usr/bin/clang++  -I/System/Library/Frameworks -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glad/include -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glm -isystem /opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14 -o CMakeFiles/Main.dir/Main.cpp.o -c /Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/Main.cpp",
+  "file": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/Main.cpp"
+},
+{
+  "directory": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/build",
+  "command": "/usr/bin/clang++  -I/System/Library/Frameworks -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glad/include -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glm -isystem /opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14 -o CMakeFiles/Main.dir/Mesh.cpp.o -c /Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/Mesh.cpp",
+  "file": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/Mesh.cpp"
+},
+{
+  "directory": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/build",
+  "command": "/usr/bin/clang++  -I/System/Library/Frameworks -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glad/include -I/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/thirdparty/glm -isystem /opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14 -o CMakeFiles/Main.dir/Camera.cpp.o -c /Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/Camera.cpp",
+  "file": "/Users/weizhengliang/Desktop/hku_course_material/COMP3271/PA2/Graphics_PA2_Release/Camera.cpp"
+}
+]
