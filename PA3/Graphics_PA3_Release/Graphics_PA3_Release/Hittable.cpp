@@ -5,10 +5,45 @@ bool Sphere::Hit(const Ray& ray, HitRecord *hit_record) const {
     // TODO: Add your code here.
     bool ret = false;
 
+    float A = glm::dot(ray.d, ray.d);
+    float B = 2.0f * glm::dot(ray.o, ray.d);
+    float C = glm::dot(ray.o, ray.o) - std::powf(r_, 2.0f);
+
+    float t1 = (-B - std::sqrtf(std::pow(B, 2.0f) - 4.0f * A * C)) / (2.0f * A);
+    float t2 = (-B + std::sqrtf(std::pow(B, 2.0f) - 4.0f * A * C)) / (2.0f * A);
+
+    float t;
+
+    if (t1 >= .0f && t2 >= .0f) {
+        ret = true;
+        t = std::min(t1, t2);
+    }
+    else if (t1 == t2 == .0f) {
+        ret = true;
+        t = .0f;
+    }
+    else if (t1 < .0f && t2 < .0f) {
+        ret = false;
+    }
+    else {
+        std::cout << "something wrong about the t(sephere)" << std::endl;
+    }
+
+
     if (ret) {
         // hit_record->... = ...
         // hit_record->... = ...
         // ....
+
+        Point intersectPoint = ray.At(t);
+        Vec normal = glm::normalize(intersectPoint - o_);
+
+        hit_record->position = intersectPoint;
+        hit_record->normal = normal;
+        hit_record->distance = std::sqrtf(std::powf(intersectPoint.x - ray.o.x, 2) + std::powf(intersectPoint.y - ray.o.y, 2) + std::powf(intersectPoint.z - ray.o.z, 2));
+        hit_record->in_direction = ray.d;
+        hit_record->reflection = glm::normalize(ray.d - 2.0f * glm::dot(ray.d, normal) * normal);
+        hit_record->material = material_;
     }
     return ret;
 }
@@ -18,10 +53,46 @@ bool Quadric::Hit(const Ray& ray, HitRecord *hit_record) const {
     // TODO: Add your code here.
     bool ret = false;
 
+    glm::vec4 D( ray.d[0], ray.d[1], ray.d[2], .0f );
+    glm::vec4 O(ray.o[0], ray.o[1], ray.o[2], 1.f);
+
+    float A = glm::dot(D, A_ * D);
+    float B = 2.0f * (glm::dot(O, A_ * D));
+    float C = glm::dot(O, A_ * O);
+
+    float determinant = std::pow(B, 2) - 4 * A * C;
+
+    float t;
+
+    if (determinant > 0) {
+        ret = true;
+        float t1 = (-B - std::sqrtf(std::pow(B, 2.0f) - 4.0f * A * C)) / (2.0f * A);
+        float t2 = (-B + std::sqrtf(std::pow(B, 2.0f) - 4.0f * A * C)) / (2.0f * A);
+        t = std::min(t1, t2);
+    }
+    else if (determinant == 0) {
+        ret = true;
+        t = -B / (2.f * A);
+    }
+    else {
+        ret = false;
+        std::cout << "no feasible t(quadric)" << std::endl;
+    }
+
     if (ret) {
         // hit_record->... = ...
         // hit_record->... = ...
         // ....
+
+        Point intersectPoint = ray.At(t);
+        Vec normal = glm::normalize((A_ + glm::transpose(A_)) * (O + D * t));
+
+        hit_record->position = intersectPoint;
+        hit_record->normal = normal;
+        hit_record->distance = std::sqrtf(std::powf(intersectPoint.x - ray.o.x, 2) + std::powf(intersectPoint.y - ray.o.y, 2) + std::powf(intersectPoint.z - ray.o.z, 2));
+        hit_record->in_direction = ray.d;
+        hit_record->reflection = glm::normalize(ray.d - 2.0f * glm::dot(ray.d, normal) * normal);
+        hit_record->material = material_;
     }
     return ret;
 }
@@ -30,17 +101,83 @@ bool Quadric::Hit(const Ray& ray, HitRecord *hit_record) const {
 bool Triangle::Hit(const Ray& ray, HitRecord *hit_record) const {
     // TODO: Add your code here.
     bool ret = false;
+    float t;
+    Point o;
+    Vec oa;
+    Vec ob;
+    Vec oc;
+
+    Vec oa_x_ob;
+    Vec ob_x_oc;
+    Vec oc_x_oa;
+
+    // ray pass through the plane the triangle lay at
+    if (glm::dot(n_a_, ray.d) != 0) {
+        t = -glm::dot((a_ - ray.o), n_a_) / (glm::dot(ray.d, n_a_));
+
+        o = ray.At(t);
+        oa = a_ - o;
+        ob = b_ - o;
+        oc = c_ - o;
+
+        oa_x_ob = glm::cross(oa, ob);
+        ob_x_oc = glm::cross(ob, oc);
+        oc_x_oa = glm::cross(oc, oa);
+
+        // check whether intersection point inside triangle
+        if (glm::dot(oa_x_ob, ob_x_oc) == 1 && glm::dot(ob_x_oc, oc_x_oa) == 1) {
+            // yes, the point is inside
+            ret = true;
+        }
+
+    }
+    
+
     
     if (ret) {
         // hit_record->... = ...
         // hit_record->... = ...
         // ....
+        Vec normal;
+        Point intersectPoint = ray.At(t);
+
         if (phong_interpolation_) {
             // hit_record->normal = ...
+
+            Vec ab = b_ - a_;
+            Vec ac = c_ - a_;
+            Vec ba = a_ - b_;
+            Vec bc = c_ - b_;
+            Vec ca = a_ - c_;
+            Vec cb = b_ - c_;
+
+            Vec ao = o - a_;
+            Vec bo = o - b_;
+            Vec co = o - c_;
+
+            float tri_abc = glm::length(glm::cross(ab, ac)) / 2.f;
+            // the top vertex is b, corresponds to the base triangle
+            float tri_b = glm::length(glm::cross(ac, ao)) / 2.f;
+            // the top vertex is c, corresponds to the base triangle
+            float tri_c = glm::length(glm::cross(ba, bo)) / 2.f;
+
+            // alpha2 corresponds to b
+            float alpha_2 = tri_b / tri_abc;
+            float alpha_3 = tri_c / tri_abc;
+            float alpha_1 = 1.f - alpha_2 - alpha_3;
+
+            normal = glm::normalize(alpha_1 * n_a_ + alpha_2 * n_b_ + alpha_3 * n_c_);
         }
         else {
             // hit_record->normal = ...
+            normal = glm::normalize(oa_x_ob);
         }
+        
+        hit_record->position = intersectPoint;
+        hit_record->normal = normal;
+        hit_record->distance = std::sqrtf(std::powf(intersectPoint.x - ray.o.x, 2.f) + std::powf(intersectPoint.y - ray.o.y, 2.f) + std::powf(intersectPoint.z - ray.o.z, 2.f));
+        hit_record->in_direction = ray.d;
+        hit_record->reflection = glm::normalize(ray.d - 2.0f * glm::dot(ray.d, normal) * normal);
         // no need to set material in this function
     }
     return ret;
