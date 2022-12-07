@@ -10,35 +10,36 @@
 const int kMaxTraceDepth = 5;
 
 Color TraceRay(const Ray& ray,
-               const std::vector<LightSource>& light_sources,
-               const Hittable& scene,
-               int trace_depth);
+    const std::vector<LightSource>& light_sources,
+    const Hittable& scene,
+    int trace_depth);
 
 Color Shade(const std::vector<LightSource>& light_sources,
-            const Hittable& hittable_collection,
-            const HitRecord& hit_record,
-            int trace_depth) {
+    const Hittable& hittable_collection,
+    const HitRecord& hit_record,
+    int trace_depth) {
     // TODO: Add your code here.
     Color color(0.f, 0.f, 0.f);
-    
+
     HitRecord record = hit_record;
     Material material = record.material;
 
     color = material.ambient;
 
     for (auto& light : light_sources) {
-        auto shadow_ray = light.position - record.in_direction; // maybe wrong, here i use the [shoot-in vector] minus [the light-position] to get [intersection-point to light vector]
-        if (glm::dot(record.normal, shadow_ray) > 0.0f) {
+        auto shadow_ray = light.position - record.position; // maybe wrong, here i use the [the light-position] minus [intersect position] to get [intersection-point to light vector]
+        if (glm::dot(record.normal, glm::normalize(shadow_ray)) > 0.f) {
             // if not hit
             if (!hittable_collection.Hit(shadow_ray, &record)) {
-                // fill in code                                                                                                                           // direction of the reflection of shadow ray??
-                color = color + 1.0f * light.intensity * (material.k_d * material.diffuse * (glm::dot(record.normal, glm::normalize(shadow_ray))) + material.k_s * material.specular * (std::powf(glm::dot(record.reflection, -record.in_direction), material.sh)));
+                // fill in code                                                                                         
+                Vec shadow_reflection_dir = glm::normalize(2.0f * glm::dot(glm::normalize(shadow_ray), record.normal) * record.normal - glm::normalize(shadow_ray));
+                color = color + (1.0f * light.intensity * (material.k_d * material.diffuse * (glm::dot(record.normal, glm::normalize(shadow_ray))) + material.k_s * material.specular * (std::pow(glm::dot(shadow_reflection_dir, -glm::normalize(record.in_direction)), material.sh))));
             }
         }
     }
 
     if (trace_depth < kMaxTraceDepth) {
-        if (material.k_s > 0) {
+        if (material.k_s > 1e-5f) {
             auto reflected_ray = record.reflection;
             Color r_color = TraceRay(reflected_ray, light_sources, hittable_collection, trace_depth++);
             r_color = r_color * material.k_s;
@@ -46,25 +47,23 @@ Color Shade(const std::vector<LightSource>& light_sources,
         }
     }
 
-    auto color_sum = color.r + color.g + color.b;
-
-    if (color_sum > 1.0f) {
-        auto rr = color.r / color_sum;
-        auto rg = color.g / color_sum;
-        auto rb = color.b / color_sum;
-
-        color.r = rr;
-        color.g = rg;
-        color.b = rb;
+    if (color.r > 1.0f) {
+        color.r = 1.0f;
+    }
+    if (color.g > 1.0f) {
+        color.g = 1.0f;
+    }
+    if (color.b > 1.0f) {
+        color.b = 1.0f;
     }
 
     return color;
 }
 
 Color TraceRay(const Ray& ray,
-               const std::vector<LightSource>& light_sources,
-               const Hittable& hittable_collection,
-               int trace_depth) {
+    const std::vector<LightSource>& light_sources,
+    const Hittable& hittable_collection,
+    int trace_depth) {
     // TODO: Add your code here.
     HitRecord record;
     Color color(0.0f, 0.0f, 0.0f);
@@ -82,10 +81,10 @@ Color TraceRay(const Ray& ray,
 
 int main() {
     // TODO: Set your workdir (absolute path) here.
-    const std::string work_dir("C:/.../Graphics_PA3_Release/");
+    const std::string work_dir("C:/Users/wei/Desktop/hku_course_material/COMP3271/COMP3271/PA3/Graphics_PA3_Release/Graphics_PA3_Release/");
 
     // Construct scene
-    Scene scene(work_dir, "scene/spheres.toml");
+    Scene scene(work_dir, "scene/sphere.toml");
     const Camera& camera = scene.camera_;
     int width = camera.width_;
     int height = camera.height_;
